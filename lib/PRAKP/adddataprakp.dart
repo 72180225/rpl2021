@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AddDataPraKp extends StatefulWidget {
@@ -8,6 +13,7 @@ class AddDataPraKp extends StatefulWidget {
 
 class _AddDataPraKpState extends State<AddDataPraKp> {
 
+  List<StorageUploadTask> _tasks = <StorageUploadTask>[];
   TextEditingController controlleridprakp = new TextEditingController();
   TextEditingController controllersemester = new TextEditingController();
   TextEditingController controllertahun = new TextEditingController();
@@ -39,6 +45,7 @@ class _AddDataPraKpState extends State<AddDataPraKp> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -50,21 +57,24 @@ class _AddDataPraKpState extends State<AddDataPraKp> {
             new Column(
               children: <Widget>[
                 new TextField(
-                  controller: controllersemester,
+                  enabled: false,
+                  controller: controllersemester..text="Genap",
                   decoration: new InputDecoration(
                     hintText: "Semester",
                     labelText: "Semester",
                   ),
                 ),
                 new TextField(
-                  controller: controllertahun,
+                  enabled: false,
+                  controller: controllertahun..text="2021",
                   decoration: new InputDecoration(
                     hintText: "Tahun",
                     labelText: "Tahun",
                   ),
                 ),
                 new TextField(
-                  controller: controllernim,
+                  enabled: false,
+                  controller: controllernim..text="72180225",
                   decoration: new InputDecoration(
                     hintText: "Nim",
                     labelText: "Nim",
@@ -137,3 +147,7 @@ class _AddDataPraKpState extends State<AddDataPraKp> {
     );
   }
 }
+
+
+
+

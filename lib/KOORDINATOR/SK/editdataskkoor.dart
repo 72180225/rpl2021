@@ -1,36 +1,38 @@
-
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
-import 'package:pdf_flutter/pdf_flutter.dart';
+import 'package:rpl2021/KOORDINATOR/SK/listskkoor.dart';
+import 'package:rpl2021/KP/listkp.dart';
+import 'package:rpl2021/PRAKP/listprakp.dart';
+import 'package:rpl2021/pengajuanSK/listsk.dart';
 
-class AddDataSk extends StatefulWidget {
+import 'detailskkoor.dart';
+
+class EditDataSkKoor extends StatefulWidget {
+  final List list;
+  final int index;
+  EditDataSkKoor({this.index,this.list});
+
   @override
-  _AddDataSkState createState() => _AddDataSkState();
+  _EditDataSkKoorState createState() => _EditDataSkKoorState();
 }
 
-class _AddDataSkState extends State<AddDataSk> {
+class _EditDataSkKoorState extends State<EditDataSkKoor> {
+  TextEditingController controlleridsk;
+  TextEditingController controllersemester;
+  TextEditingController controllertahun;
+  TextEditingController controllernim;
+  TextEditingController controllerlembaga;
+  TextEditingController controllerpimpinan;
+  TextEditingController controllernotelp;
+  TextEditingController controlleralamat;
+  TextEditingController controllerfax;
+  TextEditingController controllersurat;
 
 
-  TextEditingController controlleridsk = new TextEditingController();
-  TextEditingController controllersemester = new TextEditingController();
-  TextEditingController controllertahun = new TextEditingController();
-  TextEditingController controllernim = new TextEditingController();
-  TextEditingController controllerlembaga = new TextEditingController();
-  TextEditingController controllerpimpinan = new TextEditingController();
-  TextEditingController controllernotelp = new TextEditingController();
-  TextEditingController controlleralamat = new TextEditingController();
-  TextEditingController controllerfax = new TextEditingController();
-  TextEditingController controllersurat = new TextEditingController();
-
-
-  void addDataSk(){
-    var url="http://10.0.2.2/rpljaya_2021/adddatask.php";
-
+  void editDataPraKp(){
+    var url="http://10.0.2.2/rpljaya_2021/editdatask.php";
     http.post(url, body: {
-      "id_sk": controlleridsk.text,
+      "id_sk": widget.list[widget.index]['id_sk'],
       "semester": controllersemester.text,
       "tahun": controllertahun.text,
       "nim": controllernim.text,
@@ -44,9 +46,24 @@ class _AddDataSkState extends State<AddDataSk> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    controllersemester = new TextEditingController(text: widget.list[widget.index]['semester']);
+    controllertahun = new TextEditingController(text: widget.list[widget.index]['tahun']);
+    controllernim = new TextEditingController(text: widget.list[widget.index]['nim']);
+    controllerlembaga = new TextEditingController(text: widget.list[widget.index]['lembaga']);
+    controllerpimpinan = new TextEditingController(text: widget.list[widget.index]['pimpinan']);
+    controllernotelp = new TextEditingController(text: widget.list[widget.index]['no_telp']);
+    controlleralamat = new TextEditingController(text: widget.list[widget.index]['alamat']);
+    controllerfax = new TextEditingController(text: widget.list[widget.index]['fax']);
+    controllersurat = new TextEditingController(text: widget.list[widget.index]['surat']);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text("Add Data"),),
+      appBar: new AppBar(title: new Text("Edit Data"),),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView(
@@ -54,24 +71,21 @@ class _AddDataSkState extends State<AddDataSk> {
             new Column(
               children: <Widget>[
                 new TextField(
-                  enabled: false,
-                  controller: controllersemester..text="Genap",
+                  controller: controllersemester,
                   decoration: new InputDecoration(
                     hintText: "Semester",
                     labelText: "Semester",
                   ),
                 ),
                 new TextField(
-                  enabled: false,
-                  controller: controllertahun..text="2021",
+                  controller: controllertahun,
                   decoration: new InputDecoration(
                     hintText: "Tahun",
                     labelText: "Tahun",
                   ),
                 ),
                 new TextField(
-                  enabled: false,
-                  controller: controllernim..text="72180225",
+                  controller: controllernim,
                   decoration: new InputDecoration(
                     hintText: "Nim",
                     labelText: "Nim",
@@ -94,7 +108,7 @@ class _AddDataSkState extends State<AddDataSk> {
                 new TextField(
                   controller: controllernotelp,
                   decoration: new InputDecoration(
-                    hintText: "No telp",
+                    hintText: "No Telp",
                     labelText: "No Telp",
                   ),
                 ),
@@ -122,11 +136,15 @@ class _AddDataSkState extends State<AddDataSk> {
                 new Padding(padding: const EdgeInsets.all(10.0)),
 
                 new RaisedButton(
-                  child: new Text("TAMBAH"),
+                  child: new Text("EDIT DATA"),
                   color: Colors.blueAccent,
                   onPressed: (){
-                    addDataSk();
-                    Navigator.pop(context);
+                    editDataPraKp();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder:(BuildContext context)=>new ListSkKoor()
+                      )
+                    );
                   },
                 )
               ],

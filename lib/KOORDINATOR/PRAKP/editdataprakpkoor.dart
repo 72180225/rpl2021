@@ -1,50 +1,70 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rpl2021/KOORDINATOR/PRAKP/listprakpkoor.dart';
+import 'package:rpl2021/KP/listkp.dart';
+import 'package:rpl2021/PRAKP/listprakp.dart';
 
-class AddDataKp extends StatefulWidget {
+import 'detailprakpkoor.dart';
+
+class EditDataPraKpKoor extends StatefulWidget {
+  final List list;
+  final int index;
+  EditDataPraKpKoor({this.index,this.list});
+
   @override
-  _AddDataKpState createState() => _AddDataKpState();
+  _EditDataPraKpKoorState createState() => _EditDataPraKpKoorState();
 }
 
-class _AddDataKpState extends State<AddDataKp> {
+class _EditDataPraKpKoorState extends State<EditDataPraKpKoor> {
+  TextEditingController controlleridprakp;
+  TextEditingController controllersemester;
+  TextEditingController controllertahun;
+  TextEditingController controllernim;
+  TextEditingController controllerjudulprakp;
+  TextEditingController controllertools;
+  TextEditingController controllerlembaga;
+  TextEditingController controllerpimpinan;
+  TextEditingController controlleralamat;
+  TextEditingController controllerfax;
+  TextEditingController controllerskprakp;
 
-
-  TextEditingController controlleridkp = new TextEditingController();
-  TextEditingController controllersemester = new TextEditingController();
-  TextEditingController controllertahun = new TextEditingController();
-  TextEditingController controllernim = new TextEditingController();
-  TextEditingController controllerjudulkp = new TextEditingController();
-  TextEditingController controllertools = new TextEditingController();
-  TextEditingController controllerlembaga = new TextEditingController();
-  TextEditingController controllerpimpinan = new TextEditingController();
-  TextEditingController controlleralamat = new TextEditingController();
-  TextEditingController controllerfax = new TextEditingController();
-  TextEditingController controllerskkp = new TextEditingController();
-
-
-  void addData(){
-    var url="http://10.0.2.2/rpljaya_2021/adddatakp.php";
-
+  void editDataPraKp(){
+    var url="http://10.0.2.2/rpljaya_2021/editdataprakp.php";
     http.post(url, body: {
-      "id_kp": controlleridkp.text,
+      "id_prakp": widget.list[widget.index]['id_prakp'],
       "semester": controllersemester.text,
       "tahun": controllertahun.text,
       "nim": controllernim.text,
-      "judul_kp": controllerjudulkp.text,
+      "judul_prakp": controllerjudulprakp.text,
       "tools": controllertools.text,
       "lembaga": controllerlembaga.text,
       "pimpinan": controllerpimpinan.text,
       "alamat": controlleralamat.text,
       "fax": controllerfax.text,
-      "sk_kp": controllerskkp.text,
+      "sk_prakp": controllerskprakp.text,
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    controllersemester = new TextEditingController(text: widget.list[widget.index]['semester']);
+    controllertahun = new TextEditingController(text: widget.list[widget.index]['tahun']);
+    controllernim = new TextEditingController(text: widget.list[widget.index]['nim']);
+    controllerjudulprakp = new TextEditingController(text: widget.list[widget.index]['judul_prakp']);
+    controllertools = new TextEditingController(text: widget.list[widget.index]['tools']);
+    controllerlembaga = new TextEditingController(text: widget.list[widget.index]['lembaga']);
+    controllerpimpinan = new TextEditingController(text: widget.list[widget.index]['pimpinan']);
+    controlleralamat = new TextEditingController(text: widget.list[widget.index]['alamat']);
+    controllerfax = new TextEditingController(text: widget.list[widget.index]['fax']);
+    controllerskprakp = new TextEditingController(text: widget.list[widget.index]['sk_prakp']);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text("Add Data"),),
+      appBar: new AppBar(title: new Text("Edit Data"),),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView(
@@ -52,34 +72,31 @@ class _AddDataKpState extends State<AddDataKp> {
             new Column(
               children: <Widget>[
                 new TextField(
-                  enabled: false,
-                  controller: controllersemester..text="Genap",
+                  controller: controllersemester,
                   decoration: new InputDecoration(
                     hintText: "Semester",
                     labelText: "Semester",
                   ),
                 ),
                 new TextField(
-                  enabled: false,
-                  controller: controllertahun..text="2021",
+                  controller: controllertahun,
                   decoration: new InputDecoration(
                     hintText: "Tahun",
                     labelText: "Tahun",
                   ),
                 ),
                 new TextField(
-                  enabled: false,
-                  controller: controllernim..text="72180225",
+                  controller: controllernim,
                   decoration: new InputDecoration(
                     hintText: "Nim",
                     labelText: "Nim",
                   ),
                 ),
                 new TextField(
-                  controller: controllerjudulkp,
+                  controller: controllerjudulprakp,
                   decoration: new InputDecoration(
-                    hintText: "Judul Kp",
-                    labelText: "Judul Kp",
+                    hintText: "Judul Pra Kp",
+                    labelText: "Judul Pra Kp",
                   ),
                 ),
                 new TextField(
@@ -118,7 +135,7 @@ class _AddDataKpState extends State<AddDataKp> {
                   ),
                 ),
                 new TextField(
-                  controller: controllerskkp,
+                  controller: controllerskprakp,
                   decoration: new InputDecoration(
                     hintText: "SK KP",
                     labelText: "SK KP",
@@ -127,11 +144,15 @@ class _AddDataKpState extends State<AddDataKp> {
                 new Padding(padding: const EdgeInsets.all(10.0)),
 
                 new RaisedButton(
-                  child: new Text("TAMBAH"),
+                  child: new Text("EDIT DATA"),
                   color: Colors.blueAccent,
                   onPressed: (){
-                    addData();
-                    Navigator.pop(context);
+                    editDataPraKp();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder:(BuildContext context)=>new ListPraKpKoor()
+                      )
+                    );
                   },
                 )
               ],

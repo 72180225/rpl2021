@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rpl2021/KOORDINATOR/koordinator.dart';
 import 'package:rpl2021/dashboard.dart';
 import 'package:rpl2021/pengajuanSK/sk.dart';
 
+import 'DOSEN/dosen.dart';
 import 'KP/kp.dart';
+import 'MAHASISWA/mahasiswa.dart';
 import 'PRAKP/prakp.dart';
 import 'constants.dart';
 
@@ -30,22 +33,25 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoggedIn = false;
 
+
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   _login() async{
-    try{
-      await _googleSignIn.signIn();
-      setState(() {
-        _isLoggedIn = true;
-      });
-    }
-    catch(err){
-      print(err);
+    final googleUser = await GoogleSignIn().signIn();
+    if(googleUser != null && googleUser.email.contains("si.ukdw.ac.id")){
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Mahasiswa(nama: googleUser.displayName, email: googleUser.email, foto: googleUser.photoUrl,)));
+    } else if(googleUser != null && googleUser.email.contains("gmail.com")){
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Dosen(nama: googleUser.displayName, email: googleUser.email, foto: googleUser.photoUrl,)));
+    } else if(googleUser != null && googleUser.email.contains("students.ukdw.ac.id")){
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Koordinator(nama: googleUser.displayName, email: googleUser.email, foto: googleUser.photoUrl,)));
     }
 
   }
 
-  _logout() {
+  _logout() async{
     _googleSignIn.signOut();
     setState(() {
       _isLoggedIn = false;
@@ -56,217 +62,97 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.red,
-        body: _isLoggedIn
-        ? SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 64,
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      CircleAvatar(
-                        radius: 32,
-                        backgroundImage: NetworkImage(
-                          _googleSignIn.currentUser.photoUrl
-                        ),
-                      ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            _googleSignIn.currentUser.displayName,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20),
-                          ),
-                          Text(
-                            _googleSignIn.currentUser.email,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: GridView.count(
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    primary: false,
-                    crossAxisCount: 2,
-                    children: <Widget>[
-                      Card(
-                        shape:RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        elevation: 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            RaisedButton(
-                                color: Colors.deepPurple,
-                                child: Text(
-                                    'Pengajuan SK',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    )
-                                ),
-                              onPressed: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PengajuanSk()),
-                                );
-                              },
-
-                            )
-                          ],
-                        ),
-                      ),
-
-                      Card(
-                        shape:RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        elevation: 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            RaisedButton(
-                                color: Colors.deepPurple,
-                                child: Text(
-                                    'Pengajuan Kp',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    )
-                                ),
-                              onPressed: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PengajuanKp()),
-                                );
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-
-                      Card(
-                        shape:RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        elevation: 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            RaisedButton(
-                                color: Colors.deepPurple,
-                                child: Text(
-                                    'Pengajuan Pra Kp',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    )
-                                ),
-                              onPressed: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PengajuanPraKp()),
-                                );
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-
-                      Card(
-                        shape:RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        elevation: 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            RaisedButton(
-                                color: Colors.deepPurple,
-                                child: Text(
-                                    'Tanggal Ujian',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    )
-                                ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                      Card(
-                        shape:RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        elevation: 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            RaisedButton(
-                              color: Colors.deepPurple,
-                              child: Text(
-                                  'Logout',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  )
-                              ),
-                              onPressed: (){
-                                _logout();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+              child: Center(
+                child: Container(
+                    width: 200,
+                    height: 150,
+                    /*decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(50.0)),*/
+                    child: Image.network('')),
+              ),
             ),
-          ),
-          // children: <Widget>[
-          //   Image.network(
-          //     _googleSignIn.currentUser.photoUrl,
-          //     height: 50.0,
-          //     width: 50.0,
-          //   ),
-          //   Text(_googleSignIn.currentUser.displayName),
-          //   Text(_googleSignIn.currentUser.email),
-          //   OutlineButton(
-          //     child: Text("logOut"),
-          //     onPressed: (){
-          //       _logout();
-          //
-          //     },
-          //   )
-          // ],
-        )
-            : OutlineButton(
-          child: Text("Login With Google"),
-          onPressed: (){
-            _login();
-          },
+            // Padding(
+            //   //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+            //   padding: EdgeInsets.symmetric(horizontal: 15),
+            //   child: TextField(
+            //     decoration: InputDecoration(
+            //         border: OutlineInputBorder(),
+            //         labelText: 'Email',
+            //         hintText: 'Enter valid email id as abc@gmail.com'),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.only(
+            //       left: 15.0, right: 15.0, top: 15, bottom: 0),
+            //   //padding: EdgeInsets.symmetric(horizontal: 15),
+            //   child: TextField(
+            //
+            //     obscureText: true,
+            //     decoration: InputDecoration(
+            //         border: OutlineInputBorder(),
+            //         labelText: 'Password',
+            //         hintText: 'Enter secure password'),
+            //   ),
+            // ),
+            // FlatButton(
+            //   onPressed: (){
+            //     //TODO FORGOT PASSWORD SCREEN GOES HERE
+            //   },
+            //   child: Text(
+            //     'Forgot Password',
+            //     style: TextStyle(color: Colors.blue, fontSize: 15),
+            //   ),
+            // ),
+            // Container(
+            //   height: 50,
+            //   width: 250,
+            //   decoration: BoxDecoration(
+            //       color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+            //   child: FlatButton(
+            //     onPressed: () {
+            //       _login();
+            //     },
+            //     child: Text(
+            //       'Login',
+            //       style: TextStyle(color: Colors.white, fontSize: 25),
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 20,
+            // ),
+            // Text('Or'),
+            SizedBox(
+              height: 100,
+            ),
+            Container(
+              height: 50,
+              width: 250,
+              decoration: BoxDecoration(
+                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+              child: FlatButton(
+                onPressed: () {
+                  _login();
+                },
+                child: Text(
+                  'GOOGLE',
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 100,
+            ),
+            // Text('New User? Create Account')
+          ],
         ),
+      ),
       ),
     );
   }
